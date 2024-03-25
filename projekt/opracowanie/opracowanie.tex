@@ -1,0 +1,48 @@
+\documentclass[12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+
+\graphicspath{ {./images} }
+
+
+\begin{document}
+
+\title{{\Large}Algorytmy}
+\date{}
+\author{Jakub Heczko}
+
+\maketitle
+\section{Oznaczenia:}
+n - wielkość słowa\newline
+m - ilość słów w słowniku
+\section{Opis problemu:}
+Problem w tym zadaniu, było to aby móc znaleźć odpowiednie słowo bazująć na kombinacji liter, które dostajemy. Najłatwiej, było to zrobić za pomocą hashmap, które, były ze sobą sprzężone, co oznacza, że kolejne zależały od poprzednich, tworzyliśmy je na podstawie tego jaki numerke wybraliśmy i jakie wybieraliśmy, można to pokazać za pomocą takiego algorytmu:
+\subsection*{Pseudo kod: }
+funkcja pressedKey(int number){\newline
+    pos++;\newline
+    count = 0;\newline
+    listOfWords wyczysc //zmienna uzywana do wyswietlania slow\newline
+    baseToReset.add(words);\newline
+    HashMap newMap = nowa pusta Mapa;\newline
+    for(Character c in wszystkie charaktery pod danym numerem){\newblock\newline
+        ArrayList list = Jezeli w naszych slowach pod dana literka mamy jakis array to go zwracmy, wpp zwroc null\newblock\newline
+        Dodaj rowniez slowo do listy slow do wyswietlania
+        for(String s in list){\newblock\newline
+            Jezeli pozycja wedlug ktorej tworzymy slowa < dlugosc slowa:\newline
+                Jezeli nasza nowa mapa juz zawiera klucz to poprostu dodaj do niej slowo, ktore zawiera litere c na pozycji pos\newline
+            WPP: Utworz nowy klucz w mapie z arraylistem i do niego wsadz slowo, ktore pasuje\newline
+    Ustaw zmienna words na naszą aktualna hashmape ze slowami\newline
+        }\newline
+    }\newline
+}\newline
+\section{Użyte strukty:}
+Używałem hashMap oraz ArrayList, które są poprostu listami tablicowymi w Javie. HashMapy to normalna mapa, która używa hashowania.
+\section{Oszacowanie Złożoności Struktur: }
+Na hashMapie wszystko wykonujemy w O(1), pomijam narazie to co jest w srodku naszej hashmapy, chociaż już operacja wstawiania na listach jest również w O(1), tak iteracja po kolejnych elementach listy jest w O(n), w zaleznosci od ilosci elementow w liscie. Same struktury, zajmują oczywiście dokładnie m Stringów na początku
+\section{Oszacowanie złożoności algorytmu głównego:}
+W najgorszym wypadku bedziemy mieli 0(3nm), jeśli chodzi o pamieć, to pomijając, rzeczy, które musimy wyświetlić, będziemy mieli O(m), bo nasza ilość danych nie przekroczy wielkości słownika, który podajemy.
+\end{document}

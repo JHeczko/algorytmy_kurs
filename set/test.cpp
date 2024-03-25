@@ -1,0 +1,134 @@
+#include <iostream>
+#include "set.cpp"
+/*
+Utwórz zbiory A,B,C i D (zbiór uniwersalny rozmiar 10) Do zbioru A wstaw elementy parzyste
+Do zbioru B wstaw elementy nieparzyste
+C=A+B
+D=C-B
+A.Wypisz();
+B.Wypisz();
+C.Wypisz();
+D.Wypisz();
+sprawdź, czy:
+"D==A" "D<=A"
+"C==B"
+"B<=C"
+Do zbioru A wstaw elementy wartość 1 sprawdź, czy:
+"D==A"
+"D<=A"
+Do zbioru A wstaw elementy wartość 5 Utwórz wizytatora dla zbioru A: v_A A.Accept(v_A)
+Wypisz sumę policzoną przez v_A
+E=A *B
+Utwórz wizytatora dla zbioru E: v_E
+E.Accept(v_E)
+Wypisz sumę policzoną przez v_E
+Usuń wartość 1 z E i ponownie oblicz sumę elementów zbioru E korzystając z wizytatora
+Sprawdzenie czy w zbiorze B jest liczba nieparzysta (korzystając z wizytatora) Sprawdzenie czy w zbiorze A jest liczba nieparzysta (korzystając z wizytatora)
+Usuń wartość 1 z A
+Usuń wartość 5 z A
+Sprawdzenie czy w zbiorze A jest liczba nieparzysta (korzystając z wizytatora)
+Proszę na potrzeby sprawdzenia, czy działa IsDone(), wypisać na której komórce funkcja Accept() zakończyła przeglądanie
+*/
+using namespace std;
+using namespace set_namespace;
+using namespace Visitators;
+
+int main(){
+    SetAsArray A(10);
+    SetAsArray B(10);
+
+    A.Insert(0);
+    A.Insert(2);
+    A.Insert(4);
+    A.Insert(6);
+    A.Insert(8);
+
+    B.Insert(1);
+    B.Insert(3);
+    B.Insert(5);
+    B.Insert(7);
+    B.Insert(9);
+
+    SetAsArray C = A + B;
+    SetAsArray D = A - B;
+
+    cout << "A:\n";
+    A.wypisz();
+
+    cout << "B:\n";
+    B.wypisz();
+    cout << "\n";
+
+    cout << "+:\n";
+    C.wypisz();
+
+    cout << "-:\n";
+    D.wypisz();
+
+    cout << "==:\n";
+    cout << "D==A: " << (D==A) << " C==B: " << (C==B)  << std::endl;
+    cout << "<=:\n";
+    cout << "D<=A: " << (D<=A) << " B<=C: " << (B<=C) << endl;
+
+    A.Insert(1);
+
+    cout << "Test po A instert 1:\n";
+    cout << "D==A: "<< (D==A) << " D<=A: " << (D<=A) << endl;
+
+    AddingVisitor v_a;
+
+    A.accept(v_a);
+    cout << "Suma A: " << v_a.getSum() << endl;
+
+    SetAsArray E = A*B;
+
+    AddingVisitor v_e;
+
+    E.accept(v_e);
+    cout << "Suma E: " << v_e.getSum() << endl;
+    E.Withdraw(1);
+    v_e.reset();
+    E.accept(v_e);
+    cout << "Suma E: " << v_e.getSum() << endl;
+
+    OddVisitor oddB;
+    OddVisitor oddA;
+
+    A.accept(oddA);
+    B.accept(oddB);
+
+    cout << "Odd Visit A: " << oddA.getIndex() << "\nOdd Visit B: " << oddB.getIndex() << endl;
+
+    A.Withdraw(1);
+    A.Insert(5);
+    //A.Withdraw(5);
+
+    cout << "Odd Visit A: " << oddA.getIndex() << "\nOdd Visit B: " << oddB.getIndex() << endl;
+
+    oddA.reset();
+
+    A.accept(oddA);
+
+    cout << "Odd Visit A: " << oddA.getIndex();
+
+    cout << "\nA:\n";
+    A.wypisz();
+    cout << "B:\n";
+    B.wypisz();
+
+    Iterator<int>& itA = A.NewIterator();
+    Iterator<int>& itB = B.NewIterator();
+
+    cout << "A:\n";
+    while(!itA.IsDone()){
+        cout << *itA << " ";
+        ++itA;
+    }
+    cout << "\nB:\n";
+    while(!itB.IsDone()){
+        cout << *itB << " ";
+        ++itB;
+    }
+
+
+}

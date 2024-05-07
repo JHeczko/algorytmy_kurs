@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include <iostream>
 #include "visitor.cpp"
@@ -240,3 +242,4 @@ bool operator<=(SetAsArray const& T, SetAsArray const& S){
 };
 
 }
+

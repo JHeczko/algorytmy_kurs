@@ -1,18 +1,70 @@
-/*Utwórz graf skierowany złożony z 10 wierzchołków Wypisz, ile jest wierzchołków
-Wypisz, ile jest krawędzi
-v= SelectVertex(2);
-Wypisz unikalny Numer v
-Nadaj v wagę unikalnyNumer*UniklanyNumer; Wypisz wagę v
-AddEdge(1,2); AddEdge(1,2); AddEdge(2,3); AddEdge(3,4); AddEdge(9,9);
-Wypisz, ile jest wierzchołków Wypisz, ile jest krawędzi
-Wypisz, czy istnieje krawędź (1,1) Wypisz, czy istnieje krawędź (1,2) Wypisz, czy istnieje krawędź (2,1)
- */
-
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
 
 #include <iostream>
 #include "graph.cpp"
 
 using namespace std;
+
+void dfsTest(GraphAsMatrix& graph){
+    if(graph.IsDirected()){
+        cout << ANSI_COLOR_GREEN <<"\nSkierowany\n" << ANSI_COLOR_RESET;
+        cout << "-------------------------\n\n";
+    }else{
+        cout << ANSI_COLOR_GREEN <<"\nNieskierowany\n" << ANSI_COLOR_RESET;
+        cout << "-------------------------\n\n";
+    }
+    graph.DFS(graph.SelectVertex(1));
+}
+
+void testIteratory(GraphAsMatrix& graph){
+    if(graph.IsDirected()){
+        cout << ANSI_COLOR_GREEN <<"\nSkierowany\n" << ANSI_COLOR_RESET;
+        cout << "-------------------------\n\n";
+    }else{
+        cout << ANSI_COLOR_GREEN <<"\nNieskierowany\n" << ANSI_COLOR_RESET;
+        cout << "-------------------------\n\n";
+    }
+
+    cout << "Wierczholki: \n" << ANSI_COLOR_RESET;
+    Iterator<Vertex>& it1 = graph.VerticesIter();
+    while(!it1.IsDone()){
+        cout << "Numer: " << (*it1).getNumber() << " oraz waga: " << (*it1).weight << endl;
+        ++it1;
+    }
+    cout << endl;
+
+    graph.AddEdge(3,5);
+    graph.AddEdge(8,3);
+    graph.AddEdge(5,2);
+
+
+    cout << "Krawędzie:\n" << ANSI_COLOR_RESET;
+    Iterator<Edge>& it2 = graph.EdgesIter();
+    while(!it2.IsDone()){
+        cout << (*it2).GetV0()->getNumber() << " i " << (*it2).GetV1()->getNumber() << endl;
+        ++it2;
+    }
+
+    cout <<"Krawędzie wychadzace z 3:\n" << ANSI_COLOR_RESET;
+    Iterator<Edge>& it3 = graph.EmanatingEdgesIter(3);
+    while(!it3.IsDone()){
+        cout << (*it3).GetV0()->getNumber() << " i " << (*it3).GetV1()->getNumber() << endl;
+        ++it3;
+    }
+
+    cout << "Krawędzie wchodzace do 2:\n" << ANSI_COLOR_RESET;
+    Iterator<Edge>& it4 = graph.IncidentEdgesIter(2);
+    while(!it4.IsDone()){
+        cout << (*it4).GetV0()->getNumber() << " i " << (*it4).GetV1()->getNumber() << endl;
+        ++it4;
+    }
+}
 
 void testKrawedzie(vector<Edge *>& array){
     for(Edge* e : array){
@@ -28,66 +80,61 @@ void testKrawedzie(vector<Edge *>& array){
     cout << "----------------------------\n";
 }
 
-int main(void){
-    GraphAsMatrix notDirectedGraph(10,true);
-    GraphAsMatrix directedGraph(10,false);
+void testGrafOgol(GraphAsMatrix& graph){
+    if(graph.IsDirected()){
+        cout << ANSI_COLOR_GREEN <<"\nSkierowany\n" << ANSI_COLOR_RESET;
+        cout << "-------------------------\n\n";
+    }else{
+        cout << ANSI_COLOR_GREEN <<"\nNieskierowany\n" << ANSI_COLOR_RESET;
+        cout << "-------------------------\n\n";
+    }
+    cout << "Ilośc wierzchołków: " << graph.NumberOfVertices() << endl;
+    cout << "Ilosc krawedzi: " << graph.NumberOfEdges() << endl;
 
-    cout << "\nTesty dla skierowanego\n";
-    cout << "============================\n\n";
-
-    cout << "Ilośc wierzchołków: " << notDirectedGraph.NumberOfVertices() << endl;
-    cout << "Ilosc krawedzi: " << notDirectedGraph.NumberOfEdges() << endl;
-
-    Vertex* v = notDirectedGraph.SelectVertex(2);
+    Vertex* v = graph.SelectVertex(2);
     int id = v->getNumber();
     cout << "Unikalny numer: " << id << endl;
 
     v->weight = id*id;
     cout << "Waga: " << v->weight << endl;
 
-    notDirectedGraph.AddEdge(1,2);
-    notDirectedGraph.AddEdge(1,2);
-    notDirectedGraph.AddEdge(2,3);
-    notDirectedGraph.AddEdge(3,4);
-    notDirectedGraph.AddEdge(9,9);
+    graph.AddEdge(1,2);
+    graph.AddEdge(1,2);
+    graph.AddEdge(2,3);
+    graph.AddEdge(3,4);
+    graph.AddEdge(9,9);
 
-    cout << "Ilosc wierzchołkow: " << notDirectedGraph.NumberOfVertices() << endl;
-    cout << "Ilosc krawedzi: " << notDirectedGraph.NumberOfEdges() << endl;
-    cout << "Czy istnieje (1,1): " << notDirectedGraph.IsEdge(1,1) << endl;
-    cout << "Czy istnieje (1,2): " << notDirectedGraph.IsEdge(1,2) << endl;
-    cout << "Czy istnieje (2,1): " << notDirectedGraph.IsEdge(2,1) << endl;
+    cout << "Ilosc wierzchołkow: " << graph.NumberOfVertices() << endl;
+    cout << "Ilosc krawedzi: " << graph.NumberOfEdges() << endl;
+    cout << "Czy istnieje (1,1): " << graph.IsEdge(1,1) << endl;
+    cout << "Czy istnieje (1,2): " << graph.IsEdge(1,2) << endl;
+    cout << "Czy istnieje (2,1): " << graph.IsEdge(2,1) << endl;
+    cout << "Czy istnieje (3,4): " << graph.IsEdge(3,4) << endl;
 
-    vector<Edge*> krawedzie = {notDirectedGraph.SelectEdge(1,2),notDirectedGraph.SelectEdge(2,3),notDirectedGraph.SelectEdge(3,4),notDirectedGraph.SelectEdge(9,9)};
-    notDirectedGraph.SelectEdge(1,2);
+    vector<Edge*> krawedzie = {graph.SelectEdge(1,2),graph.SelectEdge(2,3),graph.SelectEdge(3,4),graph.SelectEdge(9,9)};
+    graph.SelectEdge(1,2);
     testKrawedzie(krawedzie);
-
-
-    cout << "\nTesty dla nieskierowanego\n";
-    cout << "============================\n\n";
-
-    cout << "Ilośc wierzchołków: " << directedGraph.NumberOfVertices() << endl;
-    cout << "Ilosc krawedzi: " << directedGraph.NumberOfEdges() << endl;
-
-    Vertex* v_skierowane = directedGraph.SelectVertex(2);
-    int id_skierowane = v_skierowane->getNumber();
-    cout << "Unikalny numer: " << id_skierowane << endl;
-
-    v_skierowane->weight = id_skierowane*id_skierowane;
-    cout << "Waga: " << v_skierowane->weight << endl;
-
-    directedGraph.AddEdge(1,2);
-    directedGraph.AddEdge(1,2);
-    directedGraph.AddEdge(2,3);
-    directedGraph.AddEdge(3,4);
-    directedGraph.AddEdge(9,9);
-
-    cout << "Ilosc wierzchołkow: " << directedGraph.NumberOfVertices() << endl;
-    cout << "Ilosc krawedzi: " << directedGraph.NumberOfEdges() << endl;
-    cout << "Czy istnieje (1,1): " << directedGraph.IsEdge(1,1) << endl;
-    cout << "Czy istnieje (1,2): " << directedGraph.IsEdge(1,2) << endl;
-    cout << "Czy istnieje (2,1): " << directedGraph.IsEdge(2,1) << endl;
-
-    vector<Edge*> krawedzie1 = {directedGraph.SelectEdge(1,2),directedGraph.SelectEdge(2,3),directedGraph.SelectEdge(3,4),directedGraph.SelectEdge(9,9)};
-    directedGraph.SelectEdge(1,2);
-    testKrawedzie(krawedzie1);
 }
+
+int main(void){
+    GraphAsMatrix notDirectedGraph(10,false);
+    GraphAsMatrix directedGraph(10,true);
+
+    cout << ANSI_COLOR_BLUE<< "\nTesty dla grafów ogół\n" << ANSI_COLOR_RESET;
+    cout << ANSI_COLOR_GREEN<< "============================\n\n" << ANSI_COLOR_RESET;
+    testGrafOgol(notDirectedGraph);
+    testGrafOgol(directedGraph);
+
+    cout << ANSI_COLOR_MAGENTA<< "\nTesty dla iteratorów\n" << ANSI_COLOR_RESET;
+    cout << ANSI_COLOR_GREEN<< "============================\n\n" << ANSI_COLOR_RESET;
+    testIteratory(notDirectedGraph);
+    testIteratory(directedGraph);
+
+
+    cout << ANSI_COLOR_CYAN<< "\nTesty dla DFS\n" << ANSI_COLOR_RESET;
+    cout << ANSI_COLOR_GREEN<< "============================\n\n" << ANSI_COLOR_RESET;
+    dfsTest(notDirectedGraph);
+    dfsTest(directedGraph);
+
+}
+

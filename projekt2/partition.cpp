@@ -22,6 +22,7 @@ public:
                 return *(set);
             }
         }
+        return *new SetAsArray(0);
     }
 
     int size(){

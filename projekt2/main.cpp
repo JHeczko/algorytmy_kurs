@@ -7,10 +7,15 @@
 using namespace std;
 
 
-int main(void){
-    Labirynt lab(10,11);
-    lab.generateRandomLabirynt();
+int main(int argc, char** argv){
+    Labirynt* lab;
+    if(argc!=3){
+        lab = new Labirynt(4,4);
+    }else{
+        lab = new Labirynt(stoi(argv[1]), stoi(argv[2]));
+    }
+    lab->generateRandomLabirynt();
     //lab.printEdgesBase();
-    lab.printEdgesLab();
-    lab.visualizeLab();
+    lab->printEdgesLab();
+    lab->visualizeLab();
 }

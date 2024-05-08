@@ -418,5 +418,15 @@ public:
         return *(new InciEdgesIter(*this,v));
     };
 
+    ~GraphAsMatrix(){
+        for(int i = 0; i<numberOfVertices;i++){
+            for(int j = 0; j < numberOfVertices; j++){
+                if(adjacencyMatrix[i][j] != nullptr) {
+                    delete adjacencyMatrix[i][j];
+                }
+            }
+        }
+    }
+
 };
 

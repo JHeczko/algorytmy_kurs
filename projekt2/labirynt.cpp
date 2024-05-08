@@ -78,6 +78,7 @@ public:
     }
 
     void visualizeLab(){
+        std::cout << "\nWizualizacja\n";
         for (int y = 0; y < wiersze; ++y) {
             if(y == 0) {
                 for (int x = 0; x < kolumny-1; ++x) {

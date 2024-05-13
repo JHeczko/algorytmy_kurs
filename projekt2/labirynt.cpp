@@ -80,6 +80,8 @@ public:
     void visualizeLab(){
         std::cout << "\nWizualizacja\n";
         for (int y = 0; y < wiersze; ++y) {
+
+            // Rysowanie poziomych kresek
             if(y == 0) {
                 for (int x = 0; x < kolumny-1; ++x) {
                     std::cout << "+---"; // rysuj górne krawędzie komórek
@@ -97,6 +99,7 @@ public:
                 std::cout << "+" << std::endl;
             }
 
+            // Rysowanie pionowych kresek
             for (int x = 0; x < kolumny; ++x) {
                 if(x == 0) {
                     std::cout << "|   "; // rysuj boczne ściany komórek

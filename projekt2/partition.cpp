@@ -48,5 +48,13 @@ public:
             set->wypisz();
         }
     }
+
+    ~Partition(){
+        for(int i = 0; i<particies.size(); i++){
+            if(particies[i] != nullptr){
+                delete particies[i];
+            }
+        }
+    }
 };
 

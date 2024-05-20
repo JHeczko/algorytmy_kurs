@@ -3,6 +3,8 @@
 #include <string>
 #include <iostream>
 
+template <typename T> class Visitor;
+
 template <typename T>
 class Iterator {
 public:
@@ -71,6 +73,28 @@ public:
             return nullptr;
         }
     };
+};
+
+class CountingVisitator{
+private:
+    int count = 0;
+public:
+    void reset() {
+        count = 0;
+    }
+
+    int getCount() {
+        return count;
+    }
+
+    void Visit(Vertex* element) {
+        std::cout << "Wierzchołek Visit nr. " << element->getNumber() << std::endl;
+        count++;
+    }
+
+    bool isDone() const {
+        return false;
+    }
 };
 
 class GraphAsMatrix
@@ -256,13 +280,35 @@ private:
         void  operator++(){next();}
     };
 
-    //metoda pomocnicza
+    // metoda pomocicza dla rozpinajacego drzewa
+    void DFS_Spanning_Tree_1(Vertex *v, std::vector<bool>& visitedArray, std::vector<int>& parent ){
+        //std::cout << "Wierzchołek nr. " << v->getNumber() << std::endl;
+        visitedArray[v->getNumber()] = true;
+
+        Iterator<Edge>& it = this->EmanatingEdgesIter(v->getNumber());
+
+        while(!it.IsDone()){
+            int num = (*it).GetV1()->getNumber();
+            int num2 = (*it).GetV0()->getNumber();
+            if(visitedArray[num] == false){
+                parent[num] = v->getNumber();
+                DFS_Spanning_Tree_1((*it).GetV1(),visitedArray,parent);
+            }
+            if(visitedArray[num2] == false){
+                DFS_Spanning_Tree_1((*it).GetV0(),visitedArray,parent);
+                parent[num2] = v->getNumber();
+            }
+            ++it;
+        }
+    }
+
+    //metoda pomocnicza dla zwyklego dfs
     void DFS1(Vertex* v, std::vector<bool>& visitedArray){
         std::cout << "Wierzchołek nr. " << v->getNumber() << std::endl;
         visitedArray[v->getNumber()] = true;
 
         Iterator<Edge>& it = this->EmanatingEdgesIter(v->getNumber());
-        Iterator<Edge>& it2 = this->IncidentEdgesIter(v->getNumber());
+        //Iterator<Edge>& it2 = this->IncidentEdgesIter(v->getNumber());
 
         while(!it.IsDone()){
             int num = (*it).GetV1()->getNumber();
@@ -276,18 +322,52 @@ private:
             }
             ++it;
         }
-        while(!it2.IsDone()){
-            int num = (*it2).GetV1()->getNumber();
-            int num2 = (*it2).GetV0()->getNumber();
+//        while(!it2.IsDone()){
+//            int num = (*it2).GetV1()->getNumber();
+//            int num2 = (*it2).GetV0()->getNumber();
+//            //std::cout << num << " " << num2 << std::endl;
+//            if(visitedArray[num] == false){
+//                DFS1((*it2).GetV1(),visitedArray);
+//            }
+//            if(visitedArray[num2] == false){
+//                DFS1((*it2).GetV0(),visitedArray);
+//            }
+//            ++it2;
+//        }
+    }
+
+    // metoda pomocnicza dla dfs z wizytatorem
+    void DFSVisit(Vertex* v, std::vector<bool>& visitedArray, CountingVisitator& visitator){
+        visitator.Visit(v);
+        visitedArray[v->getNumber()] = true;
+
+        Iterator<Edge>& it = this->EmanatingEdgesIter(v->getNumber());
+        Iterator<Edge>& it2 = this->IncidentEdgesIter(v->getNumber());
+
+        while(!it.IsDone()){
+            int num = (*it).GetV1()->getNumber();
+            int num2 = (*it).GetV0()->getNumber();
             //std::cout << num << " " << num2 << std::endl;
             if(visitedArray[num] == false){
-                DFS1((*it2).GetV1(),visitedArray);
+                DFSVisit((*it).GetV1(),visitedArray, visitator);
             }
             if(visitedArray[num2] == false){
-                DFS1((*it2).GetV0(),visitedArray);
+                DFSVisit((*it).GetV0(),visitedArray,visitator);
             }
-            ++it2;
+            ++it;
         }
+//        while(!it2.IsDone()){
+//            int num = (*it2).GetV1()->getNumber();
+//            int num2 = (*it2).GetV0()->getNumber();
+//            //std::cout << num << " " << num2 << std::endl;
+//            if(visitedArray[num] == false){
+//                DFSVisit((*it2).GetV1(),visitedArray, visitator);
+//            }
+//            if(visitedArray[num2] == false){
+//                DFSVisit((*it2).GetV0(),visitedArray, visitator);
+//            }
+//            ++it2;
+//        }
     }
 
 public:
@@ -313,13 +393,24 @@ public:
         }
     };
 
-    //metoda głowna
+    //metoda głowna dla DFS
     void DFS(Vertex* v){
         std::vector<bool> vec(numberOfVertices, false);
         DFS1(v,vec);
         for(int i = 0; i < numberOfVertices; i++){
             if(!vec[i]){
                 DFS1(this->SelectVertex(i),vec);
+            }
+        }
+    }
+
+    // metoda główna dla DFS zliczajacego
+    void DFSCount(Vertex* v, CountingVisitator& visitator){
+        std::vector<bool> vec(numberOfVertices, false);
+        DFSVisit(v,vec, visitator);
+        for(int i = 0; i < numberOfVertices; i++){
+            if(!vec[i]){ // jesli jeszcze nieodwiedzany
+                DFSVisit(this->SelectVertex(i),vec, visitator);
             }
         }
     }
@@ -349,13 +440,10 @@ public:
 
     void MakeNull(){
         this->numberOfEdges = 0;
-        for(int i = 0; i < numberOfVertices; i++){
-            Vertex tmp(i);
-            this->vertices.push_back(&tmp);
-        }
         for(int i = 0 ; i < this->numberOfVertices; i++){
-            std::vector<Edge *> tmp(this->numberOfVertices, nullptr);
-            this->adjacencyMatrix.push_back(tmp);
+            this->adjacencyMatrix[i].clear();
+            this->adjacencyMatrix[i].resize(numberOfVertices);
+
         }
     };
 
@@ -418,5 +506,61 @@ public:
         return *(new InciEdgesIter(*this,v));
     };
 
+    bool isConnected(){
+        CountingVisitator visitator;
+
+        if(numberOfVertices == 0){
+            return false;
+        }
+
+        if(isDirected){ // skierowany
+
+            Iterator<Vertex>& it = VerticesIter();
+            while(!it.IsDone()){
+                std::vector<bool> vec(numberOfVertices, false);
+                DFSVisit(SelectVertex((*it).getNumber()),vec, visitator);
+                if(visitator.getCount() != numberOfVertices){
+                    //std::cout << visitator.getCount() << "\n";
+                    return false;
+                }else{
+                    visitator.reset();
+                }
+                ++it;
+            }
+            return true;
+
+        }else{ //nieskierowany
+
+            std::vector<bool> vec(numberOfVertices, false);
+            DFSVisit(SelectVertex(0),vec, visitator);
+            if(visitator.getCount() == numberOfVertices){
+                return true;
+            }else{
+                return false;
+            }
+
+        }
+    }
+
+    GraphAsMatrix DFS_Spanning_Tree(Vertex * v){
+        GraphAsMatrix graph(this->numberOfVertices, isDirected);
+        if(!isConnected()){
+            std::cerr << "Graf nie jest spojny\n";
+            return graph;
+        }else {
+            std::vector<bool> vec(numberOfVertices, false);
+            std::vector<int> parent(numberOfVertices, -1);
+            DFS_Spanning_Tree_1(v,vec,parent);
+            for(int i = 0 ; i < parent.size(); ++i){
+                if(parent[i] != -1){
+                    graph.AddEdge(parent[i], i);
+                }
+            }
+            return graph;
+        }
+    }
+
+
 };
+
 

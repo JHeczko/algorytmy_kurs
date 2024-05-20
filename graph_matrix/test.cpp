@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void dfsTest(GraphAsMatrix& graph){
+void rozpinajaceTest(GraphAsMatrix& graph) {
     if(graph.IsDirected()){
         cout << ANSI_COLOR_GREEN <<"\nSkierowany\n" << ANSI_COLOR_RESET;
         cout << "-------------------------\n\n";
@@ -19,7 +19,100 @@ void dfsTest(GraphAsMatrix& graph){
         cout << ANSI_COLOR_GREEN <<"\nNieskierowany\n" << ANSI_COLOR_RESET;
         cout << "-------------------------\n\n";
     }
-    graph.DFS(graph.SelectVertex(1));
+    graph.MakeNull();
+    graph.AddEdge(0, 1);
+    graph.AddEdge(1, 2);
+    graph.AddEdge(2, 3);
+    graph.AddEdge(3, 4);
+    graph.AddEdge(3, 7);
+    graph.AddEdge(4, 5);
+    graph.AddEdge(5, 9);
+    graph.AddEdge(9, 9);
+    graph.AddEdge(6, 8);
+    graph.AddEdge(8, 6);
+    graph.AddEdge(0, 8);
+
+    graph.AddEdge(3, 9);
+    graph.AddEdge(5, 7);
+    graph.AddEdge(9, 8);
+
+    GraphAsMatrix rozpinajacyGraph = graph.DFS_Spanning_Tree(graph.SelectVertex(0));
+    Iterator<Edge>& it = rozpinajacyGraph.EdgesIter();
+
+    cout << "Krawędzie drzewa rozpinajacego graf:\n";
+
+
+    while(!it.IsDone()){
+        cout << (*it).GetV0()->getNumber() << " i " << (*it).GetV1()->getNumber() << endl;
+        ++it;
+    }
+}
+
+void spojnoscTest(GraphAsMatrix& graph){
+    if(graph.IsDirected()){
+        cout << ANSI_COLOR_GREEN <<"\nSkierowany\n" << ANSI_COLOR_RESET;
+        cout << "-------------------------\n\n";
+    }else{
+        cout << ANSI_COLOR_GREEN <<"\nNieskierowany\n" << ANSI_COLOR_RESET;
+        cout << "-------------------------\n\n";
+    }
+
+    graph.MakeNull();
+    graph.AddEdge(0,1);
+    graph.AddEdge(1,2);
+    graph.AddEdge(2,3);
+    graph.AddEdge(3,4);
+    graph.AddEdge(3,7);
+    graph.AddEdge(4,5);
+    graph.AddEdge(5,9);
+    graph.AddEdge(9,9);
+    graph.AddEdge(6,8);
+    graph.AddEdge(8,6);
+    graph.AddEdge(0,8);
+
+    graph.AddEdge(9,0);
+    graph.AddEdge(6,0);
+    graph.AddEdge(7,0);
+
+    cout << graph.isConnected() << endl;
+}
+
+void dfsVisitatorTest(GraphAsMatrix& graph){
+    if(graph.IsDirected()){
+        cout << ANSI_COLOR_GREEN <<"\nSkierowany\n" << ANSI_COLOR_RESET;
+        cout << "-------------------------\n\n";
+    }else{
+        cout << ANSI_COLOR_GREEN <<"\nNieskierowany\n" << ANSI_COLOR_RESET;
+        cout << "-------------------------\n\n";
+    }
+    CountingVisitator visitator;
+    graph.DFSCount(graph.SelectVertex(0), visitator);
+    cout << "Visitator count: " << visitator.getCount() << endl;
+    visitator.reset();
+}
+
+void dfsTest(GraphAsMatrix& graph){
+
+    if(graph.IsDirected()){
+        cout << ANSI_COLOR_GREEN <<"\nSkierowany\n" << ANSI_COLOR_RESET;
+        cout << "-------------------------\n\n";
+    }else{
+        cout << ANSI_COLOR_GREEN <<"\nNieskierowany\n" << ANSI_COLOR_RESET;
+        cout << "-------------------------\n\n";
+    }
+    graph.MakeNull();
+    graph.AddEdge(0,1);
+    graph.AddEdge(1,2);
+    graph.AddEdge(2,3);
+    graph.AddEdge(3,4);
+    graph.AddEdge(3,7);
+    graph.AddEdge(4,5);
+    graph.AddEdge(5,9);
+    graph.AddEdge(9,9);
+    graph.AddEdge(6,8);
+    graph.AddEdge(8,6);
+    graph.AddEdge(0,8);
+    graph.DFS(graph.SelectVertex(0));
 }
 
 void testIteratory(GraphAsMatrix& graph){
@@ -120,10 +213,12 @@ int main(void){
     GraphAsMatrix notDirectedGraph(10,false);
     GraphAsMatrix directedGraph(10,true);
 
+
     cout << ANSI_COLOR_BLUE<< "\nTesty dla grafów ogół\n" << ANSI_COLOR_RESET;
     cout << ANSI_COLOR_GREEN<< "============================\n\n" << ANSI_COLOR_RESET;
     testGrafOgol(notDirectedGraph);
     testGrafOgol(directedGraph);
+
 
     cout << ANSI_COLOR_MAGENTA<< "\nTesty dla iteratorów\n" << ANSI_COLOR_RESET;
     cout << ANSI_COLOR_GREEN<< "============================\n\n" << ANSI_COLOR_RESET;
@@ -135,6 +230,24 @@ int main(void){
     cout << ANSI_COLOR_GREEN<< "============================\n\n" << ANSI_COLOR_RESET;
     dfsTest(notDirectedGraph);
     dfsTest(directedGraph);
+
+
+    cout << ANSI_COLOR_RED<< "\nTesty dla Visitator DFS\n" << ANSI_COLOR_RESET;
+    cout << ANSI_COLOR_GREEN<< "============================\n\n" << ANSI_COLOR_RESET;
+    dfsVisitatorTest(notDirectedGraph);
+    dfsVisitatorTest(directedGraph);
+
+
+    cout << ANSI_COLOR_CYAN << "\nTesty dla sprawdzania skierowan\n" << ANSI_COLOR_RESET;
+    cout << ANSI_COLOR_GREEN << "============================\n\n" << ANSI_COLOR_RESET;
+    spojnoscTest(notDirectedGraph);
+    spojnoscTest(directedGraph);
+
+
+    cout << ANSI_COLOR_MAGENTA << "\nTesty dla sprawdzania skierowan\n" << ANSI_COLOR_RESET;
+    cout << ANSI_COLOR_GREEN << "============================\n\n" << ANSI_COLOR_RESET;
+    rozpinajaceTest(notDirectedGraph);
+    rozpinajaceTest(directedGraph);
 
 }
 
